@@ -20,8 +20,6 @@ id_ed448*
 keys/
 
 # Captures and lab artifacts
-*.pcap
-*.pcapng
 *.log
 reports/
 **/out/
