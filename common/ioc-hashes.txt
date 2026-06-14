@@ -1,0 +1,36 @@
+# IOC SHA-256 hashes — backdoored xz-utils release tarballs (CVE-2024-3094)
+#
+# Format:  <sha256>  <filename>
+# Lines beginning with '#' are comments. Used by lab1-inspect/fetch.sh and
+# common/lib.sh::verify_against_iocs to confirm a downloaded tarball IS the
+# known-bad artifact before any lab trusts it. A download that does NOT match
+# one of these is rejected (fail-safe): we never proceed with an unverified file.
+#
+# PROVENANCE (verified 2026-06-13):
+#   These hashes were computed directly from the original GitHub release assets
+#   as preserved by the Wayback Machine (web.archive.org `...id_/` raw captures
+#   of github.com/tukaani-project/xz/releases/download/v5.6.{0,1}/...).
+#   - xz-5.6.0.tar.gz : CORROBORATED against the CERT-EU advisory 2024-032 and
+#     ReversingLabs' XZ writeup, which publish this same value.
+#   - xz-5.6.1.tar.gz / xz-5.6.1.tar.xz : computed from the archived release
+#     assets (the .tar.gz is the format most lab fetchers will pull). Most public
+#     advisories cite the signed .tar.gz; the .tar.xz value is provided for
+#     completeness. If your trusted advisory lists a different value, STOP and
+#     reconcile before running — do not "fix" this file to make a download pass.
+#
+# The malicious code lived only in these RELEASE TARBALLS, not in the git repo.
+# Building 5.6.0/5.6.1 on x86-64 glibc Linux under a deb/rpm flow is what armed it.
+
+0f5c81f14171b74fcc9777d302304d964e63ffc2d7b634ef023a7249d9b5d875  xz-5.6.0.tar.gz
+2398f4a8e53345325f44bdd9f0cc7401bd9025d736c6d43b372f4dea77bf75b8  xz-5.6.1.tar.gz
+f334777310ca3ae9ba07206d78ed286a655aa3f44eec27854f740c26b2cd2ed0  xz-5.6.1.tar.xz
+
+# --- Lab 2: the compiled backdoored shared object -------------------------
+# liblzma.so.5.6.1 as built into Debian's liblzma5 5.6.1-1 (amd64). Lab 2's
+# setup-vuln.sh downloads the .deb from snapshot.debian.org and extracts this
+# .so; it must match before we ever load it into sshd. This same value is the
+# IOC cited by xzbot's README and the Neo23x0 YARA rule (hash2).
+#   deb source (stable snapshot file hash, first seen 2024-03-28):
+#   https://snapshot.debian.org/file/81f1f56c590eee24bc320293f2c5c508fcb55d02
+#   (= liblzma5_5.6.1-1_amd64.deb, /pool/main/x/xz-utils)
+605861f833fc181c7cdcabd5577ddb8989bea332648a8f498b4eef89b8f85ad4  liblzma.so.5.6.1

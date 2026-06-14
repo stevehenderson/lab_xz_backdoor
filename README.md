@@ -16,7 +16,7 @@
 | Lab | What it does | Executes the payload? |
 |-----|--------------|------------------------|
 | **Lab 1 — Inspect** | Launch a throwaway sandbox, get the malicious tarball in *offline*, and *see* the disguise: the git-vs-tarball `build-to-host.m4` diff, the test-fixture payloads, the magic marker. | **No** — static inspection only |
-| **Lab 2 — Detonate** | Stand up a genuinely backdoored `sshd` in an isolated guest, trigger it with **your own** Ed448 key (via [xzbot](https://github.com/amlweems/xzbot)), and capture both the encrypted wire traffic and the host-side smoking gun. | Yes — guest-only, offline, your key |
+| **Lab 2 — Detonate** | Build an **isolated three-VM network** (`analyst` / `compromised` / `normal`, no Docker). From the analyst jumpbox, SSH to both hosts to compare **latency** and **pcaps**, then trigger the backdoored `sshd` on `compromised` with **your own** Ed448 key (via [xzbot](https://github.com/amlweems/xzbot)) for pre-auth root RCE — while `normal` stays immune. | Yes — isolated VMs, offline, your key |
 
 ## The backdoor in one paragraph
 
@@ -34,7 +34,7 @@ it reached stable distros.
 ```bash
 make setup     # install/preflight checks (Multipass or Docker, tcpdump, etc.)
 make lab1      # inspection sandbox
-make lab2      # detonation sandbox (asks for confirmation; offline guest only)
+make lab2      # build the isolated 3-VM detonation network, then: multipass shell analyst
 make clean     # tear everything down, purge VMs / pcaps / generated keys
 ```
 

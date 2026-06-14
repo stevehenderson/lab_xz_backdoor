@@ -1,0 +1,40 @@
+# XZ Backdoor Labs — never commit payloads, captures, keys, or VM state.
+
+# Downloaded source tarballs (real malware) and any extracted trees
+*.tar
+*.tar.gz
+*.tar.xz
+*.tar.bz2
+*.tgz
+.cache/
+**/.work/
+**/work/
+xz-5.6.*/
+clean-upstream/
+
+# Generated keypairs / secrets
+*.pem
+*.key
+ed448*
+id_ed448*
+keys/
+
+# Captures and lab artifacts
+*.pcap
+*.pcapng
+*.log
+reports/
+**/out/
+
+# VM / container state
+*.qcow2
+*.img
+.vagrant/
+
+# OS / editor cruft
+.DS_Store
+*.swp
+
+# Python bytecode
+__pycache__/
+*.pyc

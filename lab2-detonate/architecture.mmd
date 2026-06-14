@@ -1,0 +1,25 @@
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"monospace","fontSize":"15px"}}}%%
+flowchart TB
+    host(["Host — control plane<br/>multipass shell / exec"])
+
+    subgraph net["Isolated bridge  xzbr0 · 10.77.0.0/24 · NO internet"]
+      direction LR
+      analyst["<b>analyst</b> · 10.77.0.10<br/>jumpbox + xzbot<br/>Ed448 seed = PRIVATE key"]
+      compromised["<b>compromised</b> · 10.77.0.20<br/>native sshd — BACKDOORED<br/>system liblzma.so.5 (5.6.1)<br/>keyed to analyst's public key"]
+      normal["<b>normal</b> · 10.77.0.30<br/>stock sshd (control)"]
+    end
+
+    host -- "control plane" --> analyst
+    analyst -- "ssh  (baseline latency / pcap)" --> normal
+    analyst -- "ssh  (slower: backdoor overhead)" --> compromised
+    analyst -. "xzbot trigger: Ed448-signed cert<br/>⇒ pre-auth ROOT RCE" .-> compromised
+    analyst == "setup: Ed448 PUBLIC key<br/>patched into liblzma" ==> compromised
+
+    classDef bad  fill:#3a0d0d,stroke:#e25555,stroke-width:2px,color:#ffffff;
+    classDef good fill:#0d3a1a,stroke:#36c46f,stroke-width:2px,color:#ffffff;
+    classDef ana  fill:#0d243a,stroke:#4f9fe2,stroke-width:2px,color:#ffffff;
+    classDef ctl  fill:#2a2a2a,stroke:#999999,stroke-width:1px,color:#ffffff;
+    class compromised bad;
+    class normal good;
+    class analyst ana;
+    class host ctl;
